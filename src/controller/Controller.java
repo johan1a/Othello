@@ -11,7 +11,7 @@ import ai.Agent;
 
 public class Controller {
 	private Agent agent;
-	private Board board;
+	Board board;
 	private GUI gui;
 	private int playerColour = Board.BLACK;
 	private int aiColour = Board.WHITE;
@@ -63,10 +63,7 @@ public class Controller {
 				System.out.println("Invalid move!");
 			}
 		}
-		
 
-
-		@SuppressWarnings("synthetic-access")
 		private void printScore() {
 			int white = board.calculateScore(Board.WHITE);
 			int black = board.calculateScore(Board.BLACK);
@@ -83,7 +80,6 @@ public class Controller {
 	}
 
 	private void updateGUIState() {
-		int[][] state = board.getState();
-		gui.updateBoardState(state);
+		gui.updateBoardState(board.getState());
 	}
 }

@@ -40,12 +40,11 @@ public class Agent {
 								changePlayer(currentPlayer)));
 
 				if (beta <= alpha) {
-					bestMove = move;
 					break;
 				}
 				bestMove = move;
-
 			}
+			return alpha;
 		}
 
 		for (Coordinate move : legalMoves) {
@@ -55,17 +54,13 @@ public class Agent {
 					alfaBeta(newBoard, depth + 1, maxDepth, alpha, beta,
 							changePlayer(currentPlayer)));
 			if (beta <= alpha) {
-				bestMove = move;
-				break;
+					break;
 			}
-			bestMove = move;
-
 		}
 		return beta;
 	}
 
-	@SuppressWarnings("static-method")
-	private int changePlayer(int player) {
+	private static int changePlayer(int player) {
 		if (player == Board.WHITE) {
 			return Board.BLACK;
 		}
