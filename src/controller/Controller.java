@@ -15,14 +15,18 @@ public class Controller {
 	GUI gui;
 	private int playerColour = Board.BLACK;
 	private int aiColour = Board.WHITE;
+	private int roundsWithoutTimeOut = 0;
 
 	public Controller(Board board) {
 		this.board = board;
 		gui = new GUI(new CommandListener(), new TimerListener());
 
 		board.newGame();
-		agent = new Agent(aiColour, 1);
-		gui.setAIRecursionDepth(agent.getRecursionDepth());
+		int timeLimit = 1;
+		int maxDepth = 7;
+		agent = new Agent(aiColour, timeLimit, maxDepth);
+		gui.setAIRecursionDepth(maxDepth);
+		gui.clearInfoText();
 		updateGUIState();
 	}
 
@@ -31,7 +35,6 @@ public class Controller {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			GUITile tile = (GUITile) e.getSource();
-
 			int x = tile.getOthelloX();
 			int y = tile.getOthelloY();
 
@@ -39,7 +42,7 @@ public class Controller {
 			if (legal) {
 				board = board.placeDisk(x, y, playerColour);
 				updateGUIState();
-
+				gui.clearInfoText();
 				if (board.isGameOver()) {
 					printScore();
 				} else {
@@ -48,25 +51,11 @@ public class Controller {
 					 * the AI can place again. Same goes for the player.
 					 */
 					do {
-						if (board.canPlaceDisk(aiColour)) {
-							board = agent.placeDisk(board);
-							if (agent.timedOut()) {
-								agent.decreaseRecursionDepth();
-								gui.setAIRecursionDepth(agent
-										.getRecursionDepth());
-								gui.printTimedOut();
-							} else {
-								gui.refreshLimitText();
-								// agent.increaseRecursionDepth();
-							}
-							updateGUIState();
-						}
-
+						doAIRound();
 						if (board.isGameOver()) {
 							printScore();
 							break;
 						}
-
 					} while (!board.canPlaceDisk(playerColour));
 				}
 			} else {
@@ -77,7 +66,7 @@ public class Controller {
 		private void printScore() {
 			int white = board.calculateScore(Board.WHITE);
 			int black = board.calculateScore(Board.BLACK);
-			int evalScore = board.evaluate(Board.WHITE);
+			// int evalScore = board.evaluate(Board.WHITE);
 
 			System.out.println("Score: ");
 			System.out.println("White: " + white);
@@ -88,6 +77,27 @@ public class Controller {
 			} else {
 				System.out.println("Black wins!");
 			}
+		}
+	}
+
+	public void doAIRound() {
+
+		if (board.canPlaceDisk(aiColour)) {
+			board = agent.placeDisk(board);
+			if (agent.timedOut()) {
+				gui.setAIRecursionDepth(agent.decreaseDepth());
+				gui.printTimedOut();
+				roundsWithoutTimeOut = 0;
+			} else {
+				gui.refreshLimitText();
+				roundsWithoutTimeOut++;
+				if (roundsWithoutTimeOut > 5) {
+					gui.setAIRecursionDepth(agent.increaseDepth());
+					
+					roundsWithoutTimeOut = 0;
+				}
+			}
+			updateGUIState();
 		}
 	}
 

@@ -10,16 +10,17 @@ import util.Timer;
 public class Agent {
 	private final int aiColour;
 	private Coordinate bestMove;
-	private int maxDepth = 8;
+	private int maxDepth = 1;
 	int testAlpha;
 	private final Coordinate nullMove = new Coordinate(-1, -1);
 	private Timer timer;
 	private double timeLimit = 1;
 	private boolean timedOut = false;
 
-	public Agent(int color, int timeLimit) {
+	public Agent(int color, int timeLimit, int maxDepth) {
 		aiColour = color;
 		this.timeLimit = timeLimit;
+		this.maxDepth = maxDepth;
 		timer = new Timer();
 	}
 
@@ -148,16 +149,13 @@ public class Agent {
 		return timedOut;
 	}
 
-	public void decreaseRecursionDepth() {
+	public int decreaseDepth() {
 		maxDepth--;
-	}
-
-	public void increaseRecursionDepth() {
-		maxDepth++;
-	}
-
-	public int getRecursionDepth() {
 		return maxDepth;
 	}
 
+	public int increaseDepth() {
+		maxDepth++;
+		return maxDepth;
+	}
 }
