@@ -10,11 +10,12 @@ import util.Timer;
 public class Agent {
 	private final int aiColour;
 	private Coordinate bestMove;
-	private final int MAX_DEPTH = 19;
+	private int maxDepth = 8;
 	int testAlpha;
 	private final Coordinate nullMove = new Coordinate(-1, -1);
 	private Timer timer;
 	private double timeLimit = 1;
+	private boolean timedOut = false;
 
 	public Agent(int color, int timeLimit) {
 		aiColour = color;
@@ -29,13 +30,10 @@ public class Agent {
 	private Coordinate calculateBestMove(Board board) {
 		bestMove = nullMove;
 		timer.startTimer(timeLimit);
-	
-		alfaBeta(board, 0, MAX_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE,
+
+		alfaBeta(board, 0, maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE,
 				aiColour);
-		if (timer.timeOut()) {
-			System.out.println("AI Time out after " + timer.getSeconds()
-					+ " seconds!");
-		}
+		timedOut = timer.timedOut();
 		return bestMove;
 	}
 
@@ -55,11 +53,8 @@ public class Agent {
 			for (Coordinate move : legalMoves) {
 				Board newBoard = board.placeDisk(move, currentPlayer);
 
-				if (timer.timeOut()) {
-					if (currentPlayer == aiColour) {
-						return alpha;
-					}
-					return beta;
+				if (timer.timedOut()) {
+					return alpha;
 				}
 
 				int score = alfaBeta(newBoard, depth + 1, maxDepth, alpha,
@@ -81,10 +76,7 @@ public class Agent {
 		for (Coordinate move : legalMoves) {
 			Board newBoard = board.placeDisk(move, currentPlayer);
 
-			if (timer.timeOut()) {
-				if (currentPlayer == aiColour) {
-					return alpha;
-				}
+			if (timer.timedOut()) {
 				return beta;
 			}
 
@@ -150,6 +142,22 @@ public class Agent {
 
 	public void setTimeLimit(double limit) {
 		timeLimit = limit;
+	}
+
+	public boolean timedOut() {
+		return timedOut;
+	}
+
+	public void decreaseRecursionDepth() {
+		maxDepth--;
+	}
+
+	public void increaseRecursionDepth() {
+		maxDepth++;
+	}
+
+	public int getRecursionDepth() {
+		return maxDepth;
 	}
 
 }

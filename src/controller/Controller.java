@@ -22,6 +22,7 @@ public class Controller {
 
 		board.newGame();
 		agent = new Agent(aiColour, 1);
+		gui.setAIRecursionDepth(agent.getRecursionDepth());
 		updateGUIState();
 	}
 
@@ -49,6 +50,15 @@ public class Controller {
 					do {
 						if (board.canPlaceDisk(aiColour)) {
 							board = agent.placeDisk(board);
+							if (agent.timedOut()) {
+								agent.decreaseRecursionDepth();
+								gui.setAIRecursionDepth(agent
+										.getRecursionDepth());
+								gui.printTimedOut();
+							} else {
+								gui.refreshLimitText();
+								// agent.increaseRecursionDepth();
+							}
 							updateGUIState();
 						}
 

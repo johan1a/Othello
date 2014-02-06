@@ -10,15 +10,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
 public class GUI extends JFrame {
 	private static final long serialVersionUID = -5494583478142571839L;
 	private static final int WIDTH = 44 * 9;
-	private static final int HEIGHT = WIDTH;
+	private static final int HEIGHT = WIDTH+50;
 	private ActionListener cmdListener, timerListener;
 	private GUIBoard othelloBoard;
 	private JTextField timerTextField;
 	private JLabel timerLabel;
+	private String timeLimit = "1";
+	private JLabel recursionLabel;
+	private String recursionDepth = "";
 
 	public GUI(ActionListener cmdListener, ActionListener timerListener) {
 		this.cmdListener = cmdListener;
@@ -39,7 +41,7 @@ public class GUI extends JFrame {
 		setLayout(new BorderLayout());
 		othelloBoard = setupBoard();
 		add(othelloBoard, BorderLayout.CENTER);
-
+		
 		JPanel timerPanel = initTimerPanel();
 
 		add(timerPanel, BorderLayout.SOUTH);
@@ -57,8 +59,11 @@ public class GUI extends JFrame {
 		button.addActionListener(timerListener);
 		timerInputPanel.add(button, BorderLayout.EAST);
 
-		timerLabel = new JLabel("    AI time limit: " + 1 + " second(s)");
+		timerLabel = new JLabel("    AI time limit: " + timeLimit
+				+ " second(s)");
+		recursionLabel = new JLabel("    AI recursion depth: " + recursionDepth);
 
+		panel.add(recursionLabel, BorderLayout.NORTH);
 		panel.add(timerInputPanel, BorderLayout.EAST);
 		panel.add(timerLabel, BorderLayout.WEST);
 		return panel;
@@ -102,7 +107,21 @@ public class GUI extends JFrame {
 	}
 
 	public void updateLimitText(String input) {
-		timerLabel.setText("    AI time limit: " + input + " second(s)");
+		timeLimit = input;
+		refreshLimitText();
 		timerTextField.setText("");
+	}
+
+	public void refreshLimitText() {
+		timerLabel.setText("    AI time limit: " + timeLimit + " second(s)");
+	}
+
+	public void printTimedOut() {
+		timerLabel.setText("    AI timed out! Decreasing depth...");
+	}
+
+	public void setAIRecursionDepth(int depth) {
+		recursionDepth = String.valueOf(depth);
+		recursionLabel.setText("    AI recursion depth: " + recursionDepth);
 	}
 }

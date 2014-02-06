@@ -11,7 +11,7 @@ public class Timer {
 		timeOut = false;
 	}
 
-	public boolean timeOut() {
+	public boolean timedOut() {
 		return timeOut ? true : startTime + 1000 * timeLimit < System
 				.currentTimeMillis();
 	}
