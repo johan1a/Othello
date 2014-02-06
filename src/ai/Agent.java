@@ -10,6 +10,7 @@ public class Agent {
 	private Coordinate bestMove;
 	private final int MAX_DEPTH = 5;
 	int testAlpha;
+	private final Coordinate nullMove = new Coordinate(-1, -1);
 
 	public Agent(int color) {
 		aiColour = color;
@@ -21,12 +22,12 @@ public class Agent {
 
 	private Coordinate calculateBestMove(Board board) {
 		System.out.println("Calculating moves...");
-		bestMove = new Coordinate(-1, -1);
+		bestMove = nullMove;
 		alfaBeta(board, 0, MAX_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE,
 				aiColour);
 		System.out.println("Pruning: " + bestMove + ", " + testAlpha);
 
-		bestMove = new Coordinate(-1, -1);
+		bestMove = nullMove;
 		miniMax(board, 0, MAX_DEPTH, aiColour);
 		System.out.println("Minimax: " + bestMove + ", " + testAlpha);
 		return bestMove;
@@ -72,7 +73,6 @@ public class Agent {
 		return beta;
 	}
 
-	@SuppressWarnings("unused")
 	private int miniMax(Board board, int depth, int maxDepth, int currentPlayer) {
 		if (board.isGameOver() || depth == maxDepth) {
 			return board.evaluate(aiColour);
@@ -86,6 +86,11 @@ public class Agent {
 		}
 
 		LinkedList<Coordinate> legalMoves = board.getLegalMoves(currentPlayer);
+
+		if (bestMove.equals(nullMove)) {
+			bestMove = legalMoves.peek();
+		}
+
 		for (Coordinate move : legalMoves) {
 			Board newBoard = board.placeDisk(move, currentPlayer);
 
@@ -101,7 +106,6 @@ public class Agent {
 				}
 			} else if (score < bestScore) {
 				bestScore = score;
-
 			}
 		}
 

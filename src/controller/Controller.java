@@ -16,6 +16,7 @@ public class Controller {
 	private int playerColour = Board.BLACK;
 	private int aiColour = Board.WHITE;
 
+	
 	public Controller(Board board) {
 		this.board = board;
 		gui = new GUI(new CommandListener());
