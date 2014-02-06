@@ -44,7 +44,8 @@ public class Controller {
 				updateGUIState();
 				gui.clearInfoText();
 				if (board.isGameOver()) {
-					printScore();
+					gui.printScore(board.calculateScore(Board.WHITE),
+							board.calculateScore(Board.BLACK));
 				} else {
 					/*
 					 * If it is impossible to place disks after the AI:s round,
@@ -53,7 +54,8 @@ public class Controller {
 					do {
 						doAIRound();
 						if (board.isGameOver()) {
-							printScore();
+							gui.printScore(board.calculateScore(Board.WHITE),
+									board.calculateScore(Board.BLACK));
 							break;
 						}
 					} while (!board.canPlaceDisk(playerColour));
@@ -63,22 +65,6 @@ public class Controller {
 			}
 		}
 
-		private void printScore() {
-			int white = board.calculateScore(Board.WHITE);
-			int black = board.calculateScore(Board.BLACK);
-			// int evalScore = board.evaluate(Board.WHITE);
-
-			System.out.println("Score: ");
-			System.out.println("White: " + white);
-			System.out.println("Black: " + black);
-			// System.out.println("Eval: " + evalScore);
-			if (white > black) {
-				System.out.println("White wins!");
-			} else {
-				System.out.println("Black wins!");
-			}
-
-		}
 	}
 
 	public void doAIRound() {

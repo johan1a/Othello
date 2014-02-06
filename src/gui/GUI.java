@@ -1,5 +1,7 @@
 package gui;
 
+import game.Board;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -133,10 +135,21 @@ public class GUI extends JFrame {
 
 	public void clearInfoText() {
 		infoLabel.setText("");
-		
+
 	}
 
 	public void printInvalidMode() {
-		infoLabel.setText("Invalid move!");	
+		infoLabel.setText("Invalid move!");
+	}
+
+	public void printScore(int white, int black) {
+		if (white > black) {
+			infoLabel.setText("White wins! Score: Black: " + black + " White: " + white
+					+ "     ");
+		} else {
+			infoLabel.setText("Black wins! Score: Black: " + black + " White: " + white
+					+ "     ");
+		}
+
 	}
 }
