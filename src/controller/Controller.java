@@ -10,19 +10,18 @@ import java.awt.event.ActionListener;
 import ai.Agent;
 
 public class Controller {
-	private Agent agent;
+	Agent agent;
 	Board board;
-	private GUI gui;
+	GUI gui;
 	private int playerColour = Board.BLACK;
 	private int aiColour = Board.WHITE;
 
-	
 	public Controller(Board board) {
 		this.board = board;
-		gui = new GUI(new CommandListener());
+		gui = new GUI(new CommandListener(), new TimerListener());
 
 		board.newGame();
-		agent = new Agent(aiColour);
+		agent = new Agent(aiColour, 1);
 		updateGUIState();
 	}
 
@@ -53,11 +52,11 @@ public class Controller {
 							updateGUIState();
 						}
 
-						if(board.isGameOver()){
+						if (board.isGameOver()) {
 							printScore();
 							break;
 						}
-						
+
 					} while (!board.canPlaceDisk(playerColour));
 				}
 			} else {
@@ -69,7 +68,7 @@ public class Controller {
 			int white = board.calculateScore(Board.WHITE);
 			int black = board.calculateScore(Board.BLACK);
 			int evalScore = board.evaluate(Board.WHITE);
-			
+
 			System.out.println("Score: ");
 			System.out.println("White: " + white);
 			System.out.println("Black: " + black);
@@ -82,7 +81,25 @@ public class Controller {
 		}
 	}
 
-	private void updateGUIState() {
+	class TimerListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			String input = gui.getTimerInput();
+			try {
+				double newTimeLimit = Double.parseDouble(input);
+				agent.setTimeLimit(newTimeLimit);
+				gui.updateLimitText(input);
+
+			} catch (NumberFormatException exception) {
+				exception.printStackTrace();
+			}
+			updateGUIState();
+		}
+	}
+
+	void updateGUIState() {
 		gui.updateBoardState(board.getState());
 	}
 }

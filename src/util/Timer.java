@@ -1,24 +1,22 @@
 package util;
 
-
 public class Timer {
 	private long startTime;
-	private double timeLimitSeconds;
+	private double timeLimit;
 	private boolean timeOut = false;
 
 	public void startTimer(double timeLimitSeconds) {
 		startTime = System.currentTimeMillis();
-		this.timeLimitSeconds = timeLimitSeconds;
+		this.timeLimit = timeLimitSeconds;
 		timeOut = false;
 	}
 
 	public boolean timeOut() {
-		return timeOut ? true : startTime + 1000 * timeLimitSeconds < System
+		return timeOut ? true : startTime + 1000 * timeLimit < System
 				.currentTimeMillis();
 	}
 
 	public double getSeconds() {
-		return System.currentTimeMillis() - (startTime + 1000 * timeLimitSeconds);
+		return (System.currentTimeMillis() - startTime)/1000;
 	}
-
 }

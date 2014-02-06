@@ -1,20 +1,28 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-@SuppressWarnings("serial")
+
 public class GUI extends JFrame {
+	private static final long serialVersionUID = -5494583478142571839L;
 	private static final int WIDTH = 44 * 9;
 	private static final int HEIGHT = WIDTH;
-	private ActionListener cmdListener;
+	private ActionListener cmdListener, timerListener;
 	private GUIBoard othelloBoard;
+	private JTextField timerTextField;
+	private JLabel timerLabel;
 
-	public GUI(ActionListener cmdListener) {
+	public GUI(ActionListener cmdListener, ActionListener timerListener) {
 		this.cmdListener = cmdListener;
+		this.timerListener = timerListener;
 		init();
 	}
 
@@ -28,11 +36,32 @@ public class GUI extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
+		setLayout(new BorderLayout());
 		othelloBoard = setupBoard();
-		add(othelloBoard);
+		add(othelloBoard, BorderLayout.CENTER);
 
+		JPanel timerPanel = initTimerPanel();
+
+		add(timerPanel, BorderLayout.SOUTH);
 		setResizable(false);
 		setVisible(true);
+	}
+
+	private JPanel initTimerPanel() {
+		JPanel panel = new JPanel(new BorderLayout());
+
+		JPanel timerInputPanel = new JPanel(new BorderLayout());
+		timerTextField = new JTextField(5);
+		timerInputPanel.add(timerTextField, BorderLayout.CENTER);
+		JButton button = new JButton("Set new limit");
+		button.addActionListener(timerListener);
+		timerInputPanel.add(button, BorderLayout.EAST);
+
+		timerLabel = new JLabel("    AI time limit: " + 1 + " second(s)");
+
+		panel.add(timerInputPanel, BorderLayout.EAST);
+		panel.add(timerLabel, BorderLayout.WEST);
+		return panel;
 	}
 
 	private GUIBoard setupBoard() {
@@ -66,5 +95,14 @@ public class GUI extends JFrame {
 
 		othelloBoard.setTiles(tiles);
 		return othelloBoard;
+	}
+
+	public String getTimerInput() {
+		return timerTextField.getText();
+	}
+
+	public void updateLimitText(String input) {
+		timerLabel.setText("    AI time limit: " + input + " second(s)");
+		timerTextField.setText("");
 	}
 }

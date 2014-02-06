@@ -10,14 +10,15 @@ import util.Timer;
 public class Agent {
 	private final int aiColour;
 	private Coordinate bestMove;
-	private final int MAX_DEPTH = 9;
+	private final int MAX_DEPTH = 19;
 	int testAlpha;
 	private final Coordinate nullMove = new Coordinate(-1, -1);
 	private Timer timer;
 	private double timeLimit = 1;
 
-	public Agent(int color) {
+	public Agent(int color, int timeLimit) {
 		aiColour = color;
+		this.timeLimit = timeLimit;
 		timer = new Timer();
 	}
 
@@ -28,10 +29,11 @@ public class Agent {
 	private Coordinate calculateBestMove(Board board) {
 		bestMove = nullMove;
 		timer.startTimer(timeLimit);
+	
 		alfaBeta(board, 0, MAX_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE,
 				aiColour);
 		if (timer.timeOut()) {
-			System.out.println("AI Time out at " + timer.getSeconds()
+			System.out.println("AI Time out after " + timer.getSeconds()
 					+ " seconds!");
 		}
 		return bestMove;
