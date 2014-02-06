@@ -102,15 +102,16 @@ public class Board {
 			for (int j = 0; j < board.length; j++) {
 				tile = getTile(i, j);
 				if (isCorner(i, j)) {
-					value = 2;
+					value = 1;
 				} else if (isBorder(i, j)) {
 					value = 1;
 				} else {
 					value = 1;
 				}
+				
 				if (tile == colour) {
 					sum += value;
-				} else if (tile != otherColour) {
+				} else if (tile != EMPTY) {
 					sum -= value;
 				}
 			}

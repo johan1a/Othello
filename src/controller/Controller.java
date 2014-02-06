@@ -67,10 +67,12 @@ public class Controller {
 		private void printScore() {
 			int white = board.calculateScore(Board.WHITE);
 			int black = board.calculateScore(Board.BLACK);
-
+			int evalScore = board.evaluate(Board.WHITE);
+			
 			System.out.println("Score: ");
 			System.out.println("White: " + white);
 			System.out.println("Black: " + black);
+			System.out.println("Eval: " + evalScore);
 			if (white > black) {
 				System.out.println("White wins!");
 			} else {

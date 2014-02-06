@@ -9,6 +9,7 @@ public class Agent {
 	private final int aiColour;
 	private Coordinate bestMove;
 	private final int MAX_DEPTH = 5;
+	int testAlpha;
 
 	public Agent(int color) {
 		aiColour = color;
@@ -19,8 +20,15 @@ public class Agent {
 	}
 
 	private Coordinate calculateBestMove(Board board) {
+		System.out.println("Calculating moves...");
+		bestMove = new Coordinate(-1, -1);
 		alfaBeta(board, 0, MAX_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE,
 				aiColour);
+		System.out.println("Pruning: " + bestMove + ", " + testAlpha);
+
+		bestMove = new Coordinate(-1, -1);
+		miniMax(board, 0, MAX_DEPTH, aiColour);
+		System.out.println("Minimax: " + bestMove + ", " + testAlpha);
 		return bestMove;
 	}
 
@@ -34,30 +42,71 @@ public class Agent {
 		if (currentPlayer == aiColour) {
 			for (Coordinate move : legalMoves) {
 				Board newBoard = board.placeDisk(move, currentPlayer);
-				alpha = Math.max(
-						alpha,
-						alfaBeta(newBoard, depth + 1, maxDepth, alpha, beta,
-								changePlayer(currentPlayer)));
-
+				int score = alfaBeta(newBoard, depth + 1, maxDepth, alpha,
+						beta, changePlayer(currentPlayer));
+				if (score > alpha) {
+					alpha = score;
+					if (depth == 0) {
+						bestMove = move;
+						testAlpha = alpha;
+					}
+				}
 				if (beta <= alpha) {
 					break;
 				}
-				bestMove = move;
 			}
 			return alpha;
 		}
 
 		for (Coordinate move : legalMoves) {
 			Board newBoard = board.placeDisk(move, currentPlayer);
-			beta = Math.min(
-					beta,
-					alfaBeta(newBoard, depth + 1, maxDepth, alpha, beta,
-							changePlayer(currentPlayer)));
+			int score = alfaBeta(newBoard, depth + 1, maxDepth, alpha, beta,
+					changePlayer(currentPlayer));
+			if (score < beta) {
+				beta = score;
+			}
 			if (beta <= alpha) {
-					break;
+				break;
 			}
 		}
 		return beta;
+	}
+
+	@SuppressWarnings("unused")
+	private int miniMax(Board board, int depth, int maxDepth, int currentPlayer) {
+		if (board.isGameOver() || depth == maxDepth) {
+			return board.evaluate(aiColour);
+		}
+
+		int bestScore;
+		if (currentPlayer == aiColour) {
+			bestScore = Integer.MIN_VALUE;
+		} else {
+			bestScore = Integer.MAX_VALUE;
+		}
+
+		LinkedList<Coordinate> legalMoves = board.getLegalMoves(currentPlayer);
+		for (Coordinate move : legalMoves) {
+			Board newBoard = board.placeDisk(move, currentPlayer);
+
+			int score = miniMax(newBoard, depth + 1, maxDepth,
+					changePlayer(currentPlayer));
+			if (currentPlayer == aiColour) {
+				if (score > bestScore) {
+					bestScore = score;
+					if (depth == 0) {
+						bestMove = move;
+						testAlpha = bestScore;
+					}
+				}
+			} else if (score < bestScore) {
+				bestScore = score;
+
+			}
+		}
+
+		// return bestScore, bestMove
+		return bestScore;
 	}
 
 	private static int changePlayer(int player) {
