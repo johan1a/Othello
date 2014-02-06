@@ -8,7 +8,7 @@ import java.util.LinkedList;
 public class Agent {
 	private final int aiColour;
 	private Coordinate bestMove;
-	private final int MAX_DEPTH = 5;
+	private final int MAX_DEPTH = 7;
 	int testAlpha;
 	private final Coordinate nullMove = new Coordinate(-1, -1);
 
@@ -21,25 +21,31 @@ public class Agent {
 	}
 
 	private Coordinate calculateBestMove(Board board) {
-		System.out.println("Calculating moves...");
+//		System.out.println("Calculating moves...");
+//		System.out.println();
 		bestMove = nullMove;
 		alfaBeta(board, 0, MAX_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE,
 				aiColour);
-		System.out.println("Pruning: " + bestMove + ", " + testAlpha);
-
-		bestMove = nullMove;
-		miniMax(board, 0, MAX_DEPTH, aiColour);
-		System.out.println("Minimax: " + bestMove + ", " + testAlpha);
+//		System.out.println("Pruning result: " + bestMove + ", " + testAlpha);
+		
+//		bestMove = nullMove;
+//		miniMax(board, 0, MAX_DEPTH, aiColour);
+//		System.out.println("Minimax result: " + bestMove + ", " + testAlpha);
 		return bestMove;
 	}
 
 	private int alfaBeta(Board board, int depth, int maxDepth, int alpha,
 			int beta, int currentPlayer) {
 		if (!board.canPlaceDisk(currentPlayer) || depth == maxDepth) {
-			return board.evaluate(currentPlayer);
+			return board.evaluate(aiColour);
 		}
 
 		LinkedList<Coordinate> legalMoves = board.getLegalMoves(currentPlayer);
+
+		if (bestMove.equals(nullMove)) {
+			bestMove = legalMoves.peek();
+		}
+
 		if (currentPlayer == aiColour) {
 			for (Coordinate move : legalMoves) {
 				Board newBoard = board.placeDisk(move, currentPlayer);
@@ -74,7 +80,7 @@ public class Agent {
 	}
 
 	private int miniMax(Board board, int depth, int maxDepth, int currentPlayer) {
-		if (board.isGameOver() || depth == maxDepth) {
+		if (!board.canPlaceDisk(currentPlayer) || depth == maxDepth) {
 			return board.evaluate(aiColour);
 		}
 
