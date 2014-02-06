@@ -59,7 +59,7 @@ public class Controller {
 					} while (!board.canPlaceDisk(playerColour));
 				}
 			} else {
-				System.out.println("Invalid move!");
+				gui.printInvalidMode();
 			}
 		}
 
@@ -71,12 +71,13 @@ public class Controller {
 			System.out.println("Score: ");
 			System.out.println("White: " + white);
 			System.out.println("Black: " + black);
-			//System.out.println("Eval: " + evalScore);
+			// System.out.println("Eval: " + evalScore);
 			if (white > black) {
 				System.out.println("White wins!");
 			} else {
 				System.out.println("Black wins!");
 			}
+
 		}
 	}
 
@@ -93,7 +94,7 @@ public class Controller {
 				roundsWithoutTimeOut++;
 				if (roundsWithoutTimeOut > 5) {
 					gui.setAIRecursionDepth(agent.increaseDepth());
-					
+
 					roundsWithoutTimeOut = 0;
 				}
 			}

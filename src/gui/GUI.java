@@ -135,4 +135,8 @@ public class GUI extends JFrame {
 		infoLabel.setText("");
 		
 	}
+
+	public void printInvalidMode() {
+		infoLabel.setText("Invalid move!");	
+	}
 }
