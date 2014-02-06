@@ -5,15 +5,20 @@ import game.Coordinate;
 
 import java.util.LinkedList;
 
+import util.Timer;
+
 public class Agent {
 	private final int aiColour;
 	private Coordinate bestMove;
-	private final int MAX_DEPTH = 7;
+	private final int MAX_DEPTH = 9;
 	int testAlpha;
 	private final Coordinate nullMove = new Coordinate(-1, -1);
+	private Timer timer;
+	private double timeLimit = 1;
 
 	public Agent(int color) {
 		aiColour = color;
+		timer = new Timer();
 	}
 
 	public Board placeDisk(Board board) {
@@ -21,16 +26,14 @@ public class Agent {
 	}
 
 	private Coordinate calculateBestMove(Board board) {
-//		System.out.println("Calculating moves...");
-//		System.out.println();
 		bestMove = nullMove;
+		timer.startTimer(timeLimit);
 		alfaBeta(board, 0, MAX_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE,
 				aiColour);
-//		System.out.println("Pruning result: " + bestMove + ", " + testAlpha);
-		
-//		bestMove = nullMove;
-//		miniMax(board, 0, MAX_DEPTH, aiColour);
-//		System.out.println("Minimax result: " + bestMove + ", " + testAlpha);
+		if (timer.timeOut()) {
+			System.out.println("AI Time out at " + timer.getSeconds()
+					+ " seconds!");
+		}
 		return bestMove;
 	}
 
@@ -49,6 +52,14 @@ public class Agent {
 		if (currentPlayer == aiColour) {
 			for (Coordinate move : legalMoves) {
 				Board newBoard = board.placeDisk(move, currentPlayer);
+
+				if (timer.timeOut()) {
+					if (currentPlayer == aiColour) {
+						return alpha;
+					}
+					return beta;
+				}
+
 				int score = alfaBeta(newBoard, depth + 1, maxDepth, alpha,
 						beta, changePlayer(currentPlayer));
 				if (score > alpha) {
@@ -67,6 +78,14 @@ public class Agent {
 
 		for (Coordinate move : legalMoves) {
 			Board newBoard = board.placeDisk(move, currentPlayer);
+
+			if (timer.timeOut()) {
+				if (currentPlayer == aiColour) {
+					return alpha;
+				}
+				return beta;
+			}
+
 			int score = alfaBeta(newBoard, depth + 1, maxDepth, alpha, beta,
 					changePlayer(currentPlayer));
 			if (score < beta) {
@@ -79,6 +98,7 @@ public class Agent {
 		return beta;
 	}
 
+	@SuppressWarnings("unused")
 	private int miniMax(Board board, int depth, int maxDepth, int currentPlayer) {
 		if (!board.canPlaceDisk(currentPlayer) || depth == maxDepth) {
 			return board.evaluate(aiColour);
@@ -124,6 +144,10 @@ public class Agent {
 			return Board.BLACK;
 		}
 		return Board.WHITE;
+	}
+
+	public void setTimeLimit(double limit) {
+		timeLimit = limit;
 	}
 
 }

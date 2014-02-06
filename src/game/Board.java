@@ -86,6 +86,7 @@ public class Board {
 		return false;
 	}
 
+	@SuppressWarnings("unused")
 	public int evaluate(int colour) {
 		int sum = 0;
 
