@@ -71,7 +71,7 @@ public class Controller {
 			System.out.println("Score: ");
 			System.out.println("White: " + white);
 			System.out.println("Black: " + black);
-			System.out.println("Eval: " + evalScore);
+			//System.out.println("Eval: " + evalScore);
 			if (white > black) {
 				System.out.println("White wins!");
 			} else {
