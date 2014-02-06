@@ -8,12 +8,11 @@ import java.util.LinkedList;
 import util.Timer;
 
 public class Agent {
+	private final Coordinate nullMove = new Coordinate(-1, -1);
+	private Timer timer;
 	private final int aiColour;
 	private Coordinate bestMove;
 	private int maxDepth = 1;
-	int testAlpha;
-	private final Coordinate nullMove = new Coordinate(-1, -1);
-	private Timer timer;
 	private double timeLimit = 1;
 	private boolean timedOut = false;
 
@@ -31,7 +30,6 @@ public class Agent {
 	private Coordinate calculateBestMove(Board board) {
 		bestMove = nullMove;
 		timer.startTimer(timeLimit);
-
 		alfaBeta(board, 0, maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE,
 				aiColour);
 		timedOut = timer.timedOut();
@@ -50,6 +48,7 @@ public class Agent {
 			bestMove = legalMoves.peek();
 		}
 
+		//If maximizing player:
 		if (currentPlayer == aiColour) {
 			for (Coordinate move : legalMoves) {
 				Board newBoard = board.placeDisk(move, currentPlayer);
@@ -64,7 +63,6 @@ public class Agent {
 					alpha = score;
 					if (depth == 0) {
 						bestMove = move;
-						testAlpha = alpha;
 					}
 				}
 				if (beta <= alpha) {
@@ -74,6 +72,7 @@ public class Agent {
 			return alpha;
 		}
 
+		//If minimizing player:
 		for (Coordinate move : legalMoves) {
 			Board newBoard = board.placeDisk(move, currentPlayer);
 
@@ -122,7 +121,6 @@ public class Agent {
 					bestScore = score;
 					if (depth == 0) {
 						bestMove = move;
-						testAlpha = bestScore;
 					}
 				}
 			} else if (score < bestScore) {

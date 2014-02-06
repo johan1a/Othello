@@ -5,9 +5,6 @@ import controller.Controller;
 
 public class Main {
 
-	/**
-	 * @param args
-	 */
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		Board board = new Board();
