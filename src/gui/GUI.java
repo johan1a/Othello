@@ -102,7 +102,6 @@ public class GUI extends JFrame {
 			borderTile.setText(String.valueOf((char) (j + 'a')));
 			othelloBoard.add(borderTile);
 		}
-
 		othelloBoard.setTiles(tiles);
 		return othelloBoard;
 	}
@@ -133,7 +132,6 @@ public class GUI extends JFrame {
 
 	public void clearInfoText() {
 		infoLabel.setText("");
-
 	}
 
 	public void printInvalidMode() {
@@ -141,13 +139,6 @@ public class GUI extends JFrame {
 	}
 
 	public void printScore(int white, int black) {
-		if (white > black) {
-			infoLabel.setText("White wins! Score: Black: " + black + " White: " + white
-					+ "     ");
-		} else {
-			infoLabel.setText("Black wins! Score: Black: " + black + " White: " + white
-					+ "     ");
-		}
-
+		infoLabel.setText("Score: Black: " + black + " White: " + white + "     ");
 	}
 }
